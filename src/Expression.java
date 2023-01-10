@@ -17,6 +17,7 @@ public class Expression {
     public String createPostfixNotation(String expression) {
         Stack<Character> operatorsStack = new Stack<>();
         StringBuilder stringBuilder = new StringBuilder();
+        char lastSymbol = ' ';
 
         for (int i = 0; i < expression.length(); ++i) {
             char c = expression.charAt(i);
@@ -30,25 +31,40 @@ public class Expression {
 
                 stringBuilder.append(' ');
                 i = pos - 1;
+                lastSymbol = '1';
             }
             else if (c == '(') {
                 operatorsStack.push('(');
+                lastSymbol = '(';
             }
             else if (c == ')') {
-                while (operatorsStack.peek() != '(') {
+                while (!operatorsStack.empty() && operatorsStack.peek() != '(') {
                     stringBuilder.append(operatorsStack.pop());
+                }
+                if (operatorsStack.empty()) {
+                    throw new RuntimeException("Wrong number of parentheses");
                 }
                 operatorsStack.pop();
+                lastSymbol = ')';
             }
             else if (operators.containsKey(c)) {
-                while (!operatorsStack.empty() && operators.get(operatorsStack.peek()) >= operators.get(c)) {
-                    stringBuilder.append(operatorsStack.pop());
+                if (operators.containsKey(lastSymbol) && lastSymbol != '(') {
+                    throw new RuntimeException("2 operators in a row are not allowed");
                 }
-                operatorsStack.push(c);
+                else {
+                    while (!operatorsStack.empty() && operators.get(operatorsStack.peek()) >= operators.get(c)) {
+                        stringBuilder.append(operatorsStack.pop());
+                    }
+                    operatorsStack.push(c);
+                    lastSymbol = c;
+                }
             }
         }
 
         while (!operatorsStack.empty()) {
+            if (operatorsStack.peek() == '(') {
+                throw new RuntimeException("Wrong number of parentheses");
+            }
             stringBuilder.append(operatorsStack.pop());
         }
 

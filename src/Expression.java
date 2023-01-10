@@ -8,10 +8,53 @@ public class Expression {
         put('-', 1);
         put('*', 2);
         put('/', 2);
+        put('~', 3);
     }};
 
-    public int calculate(String expression) {
-        return 0;
+    public double operate(char c, double first, double second) {
+        return switch (c) {
+            case '+' -> first + second;
+            case '-' -> first - second;
+            case '*' -> first * second;
+            case '/' -> first / second;
+            default -> 0;
+        };
+    }
+
+    public double calculate(String expression) {
+        String postfixNotationExpression = createPostfixNotation(expression);
+        Stack<Double> doubleStack = new Stack<>();
+
+        for (int i = 0; i < postfixNotationExpression.length(); ++i) {
+            char c = postfixNotationExpression.charAt(i);
+            if (Character.isDigit(c)) {
+                StringBuilder stringBuilder = new StringBuilder();
+                int pos = i;
+
+                while (pos < postfixNotationExpression.length() && Character.isDigit(postfixNotationExpression.charAt(pos))) {
+                    stringBuilder.append(postfixNotationExpression.charAt(pos));
+                    ++pos;
+                }
+
+                stringBuilder.append(' ');
+                i = pos - 1;
+
+                doubleStack.push(Double.parseDouble(stringBuilder.toString()));
+            }
+            else if (operators.containsKey(c)) {
+                if (c == '~') {
+                    double a = doubleStack.pop();
+                    doubleStack.push(-a);
+                }
+                else {
+                    double second = doubleStack.pop();
+                    double first = doubleStack.pop();
+                    doubleStack.push(operate(c, first, second));
+                }
+            }
+        }
+
+        return doubleStack.pop();
     }
     
     public String createPostfixNotation(String expression) {
@@ -52,6 +95,9 @@ public class Expression {
                     throw new RuntimeException("2 operators in a row are not allowed");
                 }
                 else {
+                    if (c == '-' && (i == 0 || lastSymbol == '(')) {
+                        c = '~';
+                    }
                     while (!operatorsStack.empty() && operators.get(operatorsStack.peek()) >= operators.get(c)) {
                         stringBuilder.append(operatorsStack.pop());
                     }

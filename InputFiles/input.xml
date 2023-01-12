@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<Expressions>
+    <Expression>3 + 4 - 2</Expression>
+    <Expression>1 * 4 / 2 - 3 + 9</Expression>
+    <Expression>(1/4)-6</Expression>
+</Expressions>

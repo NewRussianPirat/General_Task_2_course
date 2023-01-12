@@ -1,3 +1,5 @@
+package Expression;
+
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,5 +40,6 @@ class ExpressionTest {
         assertEquals(1, expression.calculate("(-1)+2"));
         assertEquals(2, expression.calculate("3+(-1)"));
         assertEquals(-2, expression.calculate("(-1)*2"));
+        assertThrows(ArithmeticException.class, () -> expression.calculate("1/0"));
     }
 }

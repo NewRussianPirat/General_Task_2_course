@@ -1,3 +1,5 @@
+package Expression;
+
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -11,14 +13,19 @@ public class Expression {
         put('~', 3);
     }};
 
-    public double operate(char c, double first, double second) {
-        return switch (c) {
-            case '+' -> first + second;
-            case '-' -> first - second;
-            case '*' -> first * second;
-            case '/' -> first / second;
-            default -> 0;
-        };
+    private double operate(char c, double first, double second) {
+        switch (c) {
+            case '+' : return first + second;
+            case '-' : return first - second;
+            case '*' : return first * second;
+            case '/' : {
+                if (second == 0) {
+                    throw new ArithmeticException("Division by zero");
+                }
+                return  first / second;
+            }
+            default: return 0;
+        }
     }
 
     public double calculate(String expression) {

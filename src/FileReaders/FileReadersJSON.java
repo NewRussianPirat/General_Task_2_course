@@ -10,12 +10,16 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class FileReadersJSON implements FileReaders {
+public class FileReadersJSON extends FileReaders {
+
+    FileReadersJSON(String filename1) {
+        super(filename1);
+    }
 
     @Override
-    public ArrayList<String> readFile(String filename) {
+    protected ArrayList<String> getInfo() {
         try {
-            JSONObject jsonObject = (JSONObject) new JSONParser().parse(new FileReader(filename));
+            JSONObject jsonObject = (JSONObject) new JSONParser().parse(new FileReader(this.getFilename()));
             ArrayList<String> arrayList = new ArrayList<>();
             JSONArray jsonArray = (JSONArray) jsonObject.get("expressions");
             for (Object o : jsonArray) {
@@ -32,5 +36,25 @@ public class FileReadersJSON implements FileReaders {
         catch (IOException e3) {
             throw new RuntimeException("IOException");
         }
+    }
+
+    @Override
+    protected FileReaders unpacking() {
+        return this;
+    }
+
+    @Override
+    protected FileReaders decrypting() {
+        return null;
+    }
+
+    @Override
+    protected boolean isPacked() {
+        return false;
+    }
+
+    @Override
+    protected boolean isEncrypted() {
+        return false;
     }
 }

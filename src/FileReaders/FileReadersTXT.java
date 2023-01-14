@@ -6,13 +6,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class FileReadersTXT implements FileReaders {
+public class FileReadersTXT extends FileReaders {
+
+    FileReadersTXT(String filename1) {
+        super(filename1);
+    }
 
     @Override
-    public ArrayList<String> readFile(String filename) {
+    protected ArrayList<String> getInfo() {
         try {
             ArrayList<String> stringArrayList = new ArrayList<>();
-            FileReader fileReader = new FileReader(filename);
+            FileReader fileReader = new FileReader(this.getFilename());
             Scanner scanner = new Scanner(fileReader);
             while (scanner.hasNextLine()) {
                 stringArrayList.add(scanner.nextLine());
@@ -26,5 +30,25 @@ public class FileReadersTXT implements FileReaders {
         catch (IOException e2) {
             throw new RuntimeException("IOException");
         }
+    }
+
+    @Override
+    protected FileReaders unpacking() {
+        return this;
+    }
+
+    @Override
+    protected FileReaders decrypting() {
+        return null;
+    }
+
+    @Override
+    protected boolean isPacked() {
+        return false;
+    }
+
+    @Override
+    protected boolean isEncrypted() {
+        return false;
     }
 }

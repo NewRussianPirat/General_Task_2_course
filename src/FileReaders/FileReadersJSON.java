@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class FileReadersJSON extends FileReaders {
 
-    FileReadersJSON(String filename1) {
+    public FileReadersJSON(String filename1) {
         super(filename1);
     }
 
@@ -45,7 +45,7 @@ public class FileReadersJSON extends FileReaders {
 
     @Override
     protected FileReaders decrypting() {
-        return null;
+        return this;
     }
 
     @Override

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class FileReadersXML extends FileReaders {
 
-    FileReadersXML(String filename1) {
+    public FileReadersXML(String filename1) {
         super(filename1);
     }
 
@@ -55,7 +55,7 @@ public class FileReadersXML extends FileReaders {
 
     @Override
     protected FileReaders decrypting() {
-        return null;
+        return this;
     }
 
     @Override

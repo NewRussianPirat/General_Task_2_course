@@ -3,7 +3,7 @@ package FileReaders;
 import java.util.ArrayList;
 
 public class FileReadersRAR extends FileReaders {
-    FileReadersRAR(String filename1) {
+    public FileReadersRAR(String filename1) {
         super(filename1);
     }
 
@@ -19,12 +19,12 @@ public class FileReadersRAR extends FileReaders {
 
     @Override
     protected FileReaders decrypting() {
-        return null;
+        return this;
     }
 
     @Override
     protected boolean isPacked() {
-        return false;
+        return true;
     }
 
     @Override

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public abstract class FileReaders {
     private final String filename;
 
-    FileReaders(String filename1) {
+    protected FileReaders(String filename1) {
         filename = filename1;
     }
 
@@ -22,7 +22,7 @@ public abstract class FileReaders {
             default -> throw new RuntimeException("Wrong file type");
         }
         
-        while (fileReaders.isPacked() && fileReaders.isEncrypted()) {
+        while (fileReaders.isPacked() || fileReaders.isEncrypted()) {
             fileReaders = fileReaders.unpacking();
             fileReaders = fileReaders.decrypting();
         }

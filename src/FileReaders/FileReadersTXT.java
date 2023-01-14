@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class FileReadersTXT extends FileReaders {
 
-    FileReadersTXT(String filename1) {
+    public FileReadersTXT(String filename1) {
         super(filename1);
     }
 
@@ -39,7 +39,7 @@ public class FileReadersTXT extends FileReaders {
 
     @Override
     protected FileReaders decrypting() {
-        return null;
+        return this;
     }
 
     @Override

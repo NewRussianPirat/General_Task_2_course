@@ -3,7 +3,12 @@ package FileReaders;
 import java.util.ArrayList;
 
 public abstract class FileReaders {
+
     private final String filename;
+
+    protected FileReaders() {
+        filename = "";
+    }
 
     protected FileReaders(String filename1) {
         filename = filename1;
@@ -18,7 +23,7 @@ public abstract class FileReaders {
             case "xml" -> fileReaders = new FileReadersXML(filename);
             case "json" -> fileReaders = new FileReadersJSON(filename);
             case "zip" -> fileReaders = new FileReadersZIP(filename);
-            case "rar" -> fileReaders = new FileReadersRAR(filename);
+//            case "rar" -> fileReaders = new FileReadersRAR(filename);
             default -> throw new RuntimeException("Wrong file type");
         }
         
@@ -45,9 +50,9 @@ public abstract class FileReaders {
             return  "json";
         } else if (filename.contains(".zip")) {
             return  "zip";
-        } else if (filename.contains(".rar")) {
+        } /*else if (filename.contains(".rar")) {
             return  "rar";
-        } else {
+        }*/ else {
             return  "";
         }
     }

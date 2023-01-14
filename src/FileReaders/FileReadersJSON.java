@@ -12,6 +12,10 @@ import java.util.ArrayList;
 
 public class FileReadersJSON extends FileReaders {
 
+    public FileReadersJSON() {
+        super();
+    }
+
     public FileReadersJSON(String filename1) {
         super(filename1);
     }

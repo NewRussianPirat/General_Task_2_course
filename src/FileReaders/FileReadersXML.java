@@ -13,6 +13,10 @@ import java.util.ArrayList;
 
 public class FileReadersXML extends FileReaders {
 
+    public FileReadersXML() {
+        super();
+    }
+
     public FileReadersXML(String filename1) {
         super(filename1);
     }

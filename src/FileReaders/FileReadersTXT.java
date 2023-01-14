@@ -8,6 +8,10 @@ import java.util.Scanner;
 
 public class FileReadersTXT extends FileReaders {
 
+    public FileReadersTXT() {
+        super();
+    }
+
     public FileReadersTXT(String filename1) {
         super(filename1);
     }

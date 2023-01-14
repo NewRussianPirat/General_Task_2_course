@@ -9,6 +9,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class FileReadersZIP extends FileReaders {
+
+    public FileReadersZIP() {
+        super();
+    }
+
     public FileReadersZIP(String filename1) {
         super(filename1);
     }
@@ -38,7 +43,7 @@ public class FileReadersZIP extends FileReaders {
                 case "xml" -> { return new FileReadersXML(filename); }
                 case "json" -> { return new FileReadersJSON(filename); }
                 case "zip" -> { return new FileReadersZIP(filename); }
-                case "rar" -> { return new FileReadersRAR(filename); }
+//                case "rar" -> { return new FileReadersRAR(filename); }
                 default -> { return null; }
             }
         }

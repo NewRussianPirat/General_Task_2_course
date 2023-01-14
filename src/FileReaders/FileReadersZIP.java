@@ -1,7 +1,6 @@
 package FileReaders;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,11 +45,7 @@ public class FileReadersZIP extends FileReaders {
 //                case "rar" -> { return new FileReadersRAR(filename); }
                 default -> { return null; }
             }
-        }
-        catch (FileNotFoundException e) {
-            throw new RuntimeException("File not found");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

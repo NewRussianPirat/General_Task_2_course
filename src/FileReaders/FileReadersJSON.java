@@ -5,7 +5,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,15 +29,8 @@ public class FileReadersJSON extends FileReaders {
                 arrayList.add(o.toString());
             }
             return arrayList;
-        }
-        catch (FileNotFoundException e1) {
-            throw new RuntimeException("File not found");
-        }
-        catch (ParseException e2) {
-            throw new RuntimeException("ParseException");
-        }
-        catch (IOException e3) {
-            throw new RuntimeException("IOException");
+        } catch (IOException | ParseException e) {
+            throw new RuntimeException(e);
         }
     }
 

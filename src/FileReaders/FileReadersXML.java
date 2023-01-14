@@ -6,7 +6,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -40,15 +39,8 @@ public class FileReadersXML extends FileReaders {
             }
             inputStream.close();
             return arrayList;
-        }
-        catch (FileNotFoundException e1) {
-            throw new RuntimeException("File not found");
-        }
-        catch (XMLStreamException e2) {
-            throw new RuntimeException("XMLStreamException");
-        }
-        catch (IOException e3) {
-            throw new RuntimeException("IOException");
+        } catch (IOException | XMLStreamException e) {
+            throw new RuntimeException(e);
         }
     }
 

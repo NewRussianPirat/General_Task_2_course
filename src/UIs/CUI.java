@@ -4,8 +4,6 @@ import Expression.Expression;
 import FileReaders.*;
 import FileWriters.*;
 
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -30,15 +28,12 @@ public class CUI {
              char c = 'y';
              char cin;
              char cout;
-             char cinEncrypted = '0';
-             char coutArchEncr = '0';
              ArrayList<String> expressions = new ArrayList<>();
              ArrayList<Double> result = new ArrayList<>();
-             SecretKeySpec key = null;
-             SecretKey outputKey = null;
              Scanner scanner = new Scanner(System.in);
 
              while (c != 'n') {
+
                  System.out.println("""
                                           
                          Welcome to my super calculator
@@ -48,40 +43,16 @@ public class CUI {
                          3. XML file
                          4. JSON file
                          5. ZIP file
+                         6. ENC file
                          """
                  );
                  cin = scanner.nextLine().charAt(0);
-                 while (cin != '1' && cin != '2' && cin != '3' && cin != '4' && cin != '5') {
+                 while (cin != '1' && cin != '2' && cin != '3' && cin != '4' && cin != '5' && cin != '6') {
                      System.out.println("""
+                             
                              Wrong command, please, try again:
                              """);
                      cin = scanner.nextLine().charAt(0);
-                 }
-
-                 if (cin == '2' || cin == '3' || cin == '4' || cin == '5') {
-                     System.out.println("""
-                                              
-                             Is file encrypted?
-                             1. Yes
-                             2. No
-                             """
-                     );
-                     cinEncrypted = scanner.nextLine().charAt(0);
-                     while (cinEncrypted != '1' && cinEncrypted != '2') {
-                         System.out.println("""
-                                 Wrong command, please, try again:
-                                 """);
-                         cinEncrypted = scanner.nextLine().charAt(0);
-                     }
-                     if (cinEncrypted == '1') {
-                         System.out.println("""
-                                                              
-                                 Please, write the key:
-                                 """
-                         );
-                         String string = scanner.nextLine();
-                         key = new SecretKeySpec(string.getBytes(), "AES");
-                     }
                  }
 
                  System.out.println("""
@@ -96,26 +67,10 @@ public class CUI {
                  cout = scanner.nextLine().charAt(0);
                  while (cout != '1' && cout != '2' && cout != '3' && cout != '4') {
                      System.out.println("""
+                             
                              Wrong command, please, try again:
                              """);
                      cout = scanner.nextLine().charAt(0);
-                 }
-
-                 if (cout == '2' || cout == '3' || cout == '4') {
-                     System.out.println("""
-                             Do you want to archive or encrypt file?
-                             1. Archive
-                             2. Encrypt
-                             3. Both
-                             4. No
-                             """);
-                     coutArchEncr = scanner.nextLine().charAt(0);
-                     while (coutArchEncr != '1' && coutArchEncr != '2' && coutArchEncr != '3' && coutArchEncr != '4') {
-                         System.out.println("""
-                                 Wrong command, please, try again:
-                                 """);
-                         coutArchEncr = scanner.nextLine().charAt(0);
-                     }
                  }
 
                  switch (cin) {
@@ -126,38 +81,26 @@ public class CUI {
                      }
                      case '2' -> {
                          fileReaders = new FileReadersTXT();
-                         if (cinEncrypted == '1') {
-                             fileReaders.setEncrypted(true);
-                             fileReaders.setKey(key);
-                         }
                          expressions = fileReaders.readFile("inputFiles/input.txt");
                      }
                      case '3' -> {
                          fileReaders = new FileReadersXML();
-                         if (cinEncrypted == '1') {
-                             fileReaders.setEncrypted(true);
-                             fileReaders.setKey(key);
-                         }
                          expressions = fileReaders.readFile("inputFiles/input.xml");
                      }
                      case '4' -> {
                          fileReaders = new FileReadersJSON();
-                         if (cinEncrypted == '1') {
-                             fileReaders.setEncrypted(true);
-                             fileReaders.setKey(key);
-                         }
                          expressions = fileReaders.readFile("inputFiles/input.json");
                      }
                      case '5' -> {
                          fileReaders = new FileReadersZIP();
-                         if (cinEncrypted == '1') {
-                             fileReaders.setEncrypted(true);
-                             fileReaders.setKey(key);
-                         }
                          expressions = fileReaders.readFile("inputFiles/input.zip");
                      }
+                     case '6' -> {
+                         fileReaders = new FileReadersENC();
+                         expressions = fileReaders.readFile("inputFiles/input.txt.enc");
+                     }
                  }
-                 for (var s : expressions) {
+                 for (String s : expressions) {
                      result.add(expression.calculate(s));
                  }
                  if (cout == '1') {
@@ -180,35 +123,47 @@ public class CUI {
                              fileWriters = new FileWritersJSON(filename);
                          }
                      }
-                     for (var s : result) {
+                     for (Double s : result) {
                          fileWriters.writeFile(s.toString() + '\n');
                      }
                      fileWriters.close();
-                     switch (coutArchEncr) {
-                         case '1' -> {
-                             fileWriters = new FileWritersZIP("outputFiles/output.zip");
-                             fileWriters.writeFile(filename);
+                     char archiveOrEncrypt= '0';
+                     while (archiveOrEncrypt != '3') {
+                         System.out.println("""
+                                                              
+                                 Do you want to do something with your output file?
+                                 1. Archive
+                                 2. Encrypt
+                                 3. Nothing
+                                 """
+                         );
+                         archiveOrEncrypt = scanner.nextLine().charAt(0);
+                         while (archiveOrEncrypt != '1' && archiveOrEncrypt != '2' && archiveOrEncrypt != '3') {
+                             System.out.println("""
+                                                                  
+                                     Wrong command, please, try again:
+                                     """
+                             );
+                             archiveOrEncrypt = scanner.nextLine().charAt(0);
                          }
-                         case '2' -> {
-                             Encryption encryption = new Encryption();
-                             outputKey = encryption.encrypt(fileWriters);
-                         }
-                         case '3' -> {
-                             Encryption encryption = new Encryption();
-                             outputKey = encryption.encrypt(fileWriters);
-                             fileWriters = new FileWritersZIP("outputFiles/output.zip");
-                             fileWriters.writeFile(filename);
+                         switch (archiveOrEncrypt) {
+                             case '1' -> {
+                                 fileWriters = new FileWritersZIP(filename + ".zip");
+                                 fileWriters.writeFile(filename);
+                                 filename = fileWriters.getFilename();
+                                 fileWriters.close();
+                             }
+                             case '2' -> {
+                                 Encryption encryption = new Encryption();
+                                 encryption.encrypt(filename);
+                                 filename += ".enc";
+                             }
                          }
                      }
                  }
-                 if (cout != '1') {
-                     fileWriters.close();
-                 }
-                 System.out.println("\nDone");
-                 if (outputKey != null) {
-                     System.out.println("\nKey of encrypted file: " + outputKey);
-                 }
                  System.out.println("""
+
+                         Done
                          Do you want to continue?
                          y - yes
                          n - no
@@ -217,6 +172,7 @@ public class CUI {
                  c = scanner.nextLine().charAt(0);
                  while (c != 'y' && c != 'n') {
                      System.out.println("""
+                             
                              Wrong command, please, try again:
                              """
                      );

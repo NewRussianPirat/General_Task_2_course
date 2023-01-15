@@ -8,6 +8,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class FileWritersZIP extends FileWriters {
+
     ZipOutputStream zipOutputStream;
     FileOutputStream fileOutputStream;
     FileInputStream fileInputStream;

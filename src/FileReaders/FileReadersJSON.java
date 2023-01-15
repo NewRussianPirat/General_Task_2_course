@@ -11,10 +11,11 @@ import java.util.ArrayList;
 
 public class FileReadersJSON extends FileReaders {
 
+    protected String JSON_KEY = "expressions";
+
     public FileReadersJSON() {
         super();
     }
-
     public FileReadersJSON(String filename1) {
         super(filename1);
     }
@@ -24,7 +25,7 @@ public class FileReadersJSON extends FileReaders {
         try {
             JSONObject jsonObject = (JSONObject) new JSONParser().parse(new FileReader(this.getFilename()));
             ArrayList<String> arrayList = new ArrayList<>();
-            JSONArray jsonArray = (JSONArray) jsonObject.get("expressions");
+            JSONArray jsonArray = (JSONArray) jsonObject.get(JSON_KEY);
             for (Object o : jsonArray) {
                 arrayList.add(o.toString());
             }
@@ -46,6 +47,11 @@ public class FileReadersJSON extends FileReaders {
 
     @Override
     protected boolean isPacked() {
+        return false;
+    }
+
+    @Override
+    protected boolean isEncrypted() {
         return false;
     }
 }

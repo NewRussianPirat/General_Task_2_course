@@ -12,10 +12,11 @@ import java.util.ArrayList;
 
 public class FileReadersXML extends FileReaders {
 
+    protected String XML_EVENT_NAME = "Expression";
+
     public FileReadersXML() {
         super();
     }
-
     public FileReadersXML(String filename1) {
         super(filename1);
     }
@@ -31,7 +32,7 @@ public class FileReadersXML extends FileReaders {
                 XMLEvent xmlEvent = xmlEventReader.nextEvent();
                 if (xmlEvent.isStartElement()) {
                     StartElement startElement = xmlEvent.asStartElement();
-                    if (startElement.getName().getLocalPart().equals("Expression")) {
+                    if (startElement.getName().getLocalPart().equals(XML_EVENT_NAME)) {
                         xmlEvent = xmlEventReader.nextEvent();
                         arrayList.add(xmlEvent.asCharacters().toString());
                     }

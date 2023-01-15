@@ -36,15 +36,8 @@ public class FileReadersZIP extends FileReaders {
             fileOutputStream.close();
             zipInputStream.close();
 
-            String type = getFileType(filename);
-            switch (type) {
-                case "txt" -> { return new FileReadersTXT(filename); }
-                case "xml" -> { return new FileReadersXML(filename); }
-                case "json" -> { return new FileReadersJSON(filename); }
-                case "zip" -> { return new FileReadersZIP(filename); }
-//                case "rar" -> { return new FileReadersRAR(filename); }
-                default -> { return null; }
-            }
+            return createFileReader(filename);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

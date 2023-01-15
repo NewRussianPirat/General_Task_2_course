@@ -18,6 +18,8 @@ class ExpressionTest {
         assertEquals("1 ~2 +", expression.createPostfixNotation("(-1)+2"));
         assertEquals("3 1 ~+", expression.createPostfixNotation("3+(-1)"));
         assertEquals("1 ~2 *", expression.createPostfixNotation("(-1)*2"));
+        assertEquals("1 ~~", expression.createPostfixNotation("-(-1)"));
+        assertEquals("1 ~2 +~", expression.createPostfixNotation("-(-1 + 2)"));
         assertThrows(RuntimeException.class, () -> expression.createPostfixNotation("2 + 3)"));
         assertThrows(RuntimeException.class, () -> expression.createPostfixNotation("(2 + 3"));
         assertThrows(RuntimeException.class, () -> expression.createPostfixNotation("(2-3)*(4+2)-8+3)"));
@@ -40,6 +42,8 @@ class ExpressionTest {
         assertEquals(1, expression.calculate("(-1)+2"));
         assertEquals(2, expression.calculate("3+(-1)"));
         assertEquals(-2, expression.calculate("(-1)*2"));
+        assertEquals(1, expression.calculate("-(-1)"));
+        assertEquals(-1, expression.calculate("-(-1 + 2)"));
         assertThrows(ArithmeticException.class, () -> expression.calculate("1/0"));
     }
 }

@@ -1,10 +1,13 @@
 package FileReaders;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.util.ArrayList;
 
 public abstract class FileReaders {
 
-    private final String filename;
+    protected final String filename;
+    protected boolean encrypted;
+    protected SecretKeySpec key;
 
     protected FileReaders() {
         filename = "";
@@ -39,7 +42,7 @@ public abstract class FileReaders {
     abstract protected FileReaders unpacking();
     abstract protected FileReaders decrypting();
     abstract protected boolean isPacked();
-    abstract protected boolean isEncrypted();
+    protected boolean isEncrypted() { return encrypted; }
     
     String getFileType(String filename) {
         if (filename.contains(".txt")) {
@@ -59,5 +62,13 @@ public abstract class FileReaders {
 
     public String getFilename() {
         return filename;
+    }
+
+    public void setEncrypted(boolean encrypted) {
+        this.encrypted = encrypted;
+    }
+
+    public void setKey(SecretKeySpec key) {
+        this.key = key;
     }
 }

@@ -48,9 +48,4 @@ public class FileReadersJSON extends FileReaders {
     protected boolean isPacked() {
         return false;
     }
-
-    @Override
-    protected boolean isEncrypted() {
-        return false;
-    }
 }

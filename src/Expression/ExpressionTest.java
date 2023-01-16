@@ -45,5 +45,8 @@ class ExpressionTest {
         assertEquals(1, expression.calculate("-(-1)"));
         assertEquals(-1, expression.calculate("-(-1 + 2)"));
         assertThrows(ArithmeticException.class, () -> expression.calculate("1/0"));
+        assertThrows(RuntimeException.class, () -> expression.calculate("+"));
+        assertThrows(RuntimeException.class, () -> expression.calculate("1 +"));
+        assertThrows(RuntimeException.class, () -> expression.calculate("-"));
     }
 }

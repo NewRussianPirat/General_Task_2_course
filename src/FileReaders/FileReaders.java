@@ -20,17 +20,11 @@ public abstract class FileReaders {
     protected FileReaders(String filename1) { filename = filename1; }
 
     public ArrayList<String> readFile(String filename) {
-        FileReaders fileReaders;
-        String type = getFileType(filename);
 
-        switch (type) {
-            case TXT_TYPE -> fileReaders = new FileReadersTXT(filename);
-            case XML_TYPE -> fileReaders = new FileReadersXML(filename);
-            case JSON_TYPE -> fileReaders = new FileReadersJSON(filename);
-            case ZIP_TYPE -> fileReaders = new FileReadersZIP(filename);
-//            case RAR_TYPE -> fileReaders = new FileReadersRAR(filename);
-            case ENC_TYPE -> fileReaders = new FileReadersENC(filename);
-            default -> throw new RuntimeException("Wrong file type");
+        FileReaders fileReaders = createFileReader(filename);
+
+        if (fileReaders == null) {
+            throw new RuntimeException("Wrong file type");
         }
 
         while (fileReaders.isPacked() || fileReaders.isEncrypted()) {
@@ -47,7 +41,7 @@ public abstract class FileReaders {
     abstract protected boolean isPacked();
     abstract protected boolean isEncrypted();
 
-    String getFileType(String filename) {
+    protected String getFileType(String filename) {
         return filename.substring(filename.lastIndexOf('.'));
     }
 
@@ -62,7 +56,7 @@ public abstract class FileReaders {
             case XML_TYPE -> { return new FileReadersXML(filename); }
             case JSON_TYPE -> { return new FileReadersJSON(filename); }
             case ZIP_TYPE -> { return new FileReadersZIP(filename); }
-//                case "rar" -> { return new FileReadersRAR(filename); }
+//            case RAR_TYPE -> { return new FileReadersRAR(filename); }
             case ENC_TYPE -> { return new FileReadersENC(filename); }
             default -> { return null; }
         }

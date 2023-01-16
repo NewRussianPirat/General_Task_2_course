@@ -1,8 +1,8 @@
-import UIs.CUI;
+import UIs.GUI;
 
 public class Main {
     public static void main(String[] args) {
-        CUI cui = CUI.getInstance();
-        cui.createCUI();
+        GUI gui = GUI.getInstance();
+        gui.createGUI();
     }
 }

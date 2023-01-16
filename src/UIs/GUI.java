@@ -1,7 +1,13 @@
 package UIs;
 
+import Expression.Expression;
+
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.event.*;
+
 public class GUI {
 
     private static GUI gui = null;
@@ -14,10 +20,40 @@ public class GUI {
     private static final JLabel whatDoLabel = new JLabel();
     private static final JLabel enterLabel = new JLabel();
     private static final JLabel resultLabel = new JLabel();
+    private static final JLabel errorLabel = new JLabel();
 
     private static final JTextField enterField = new JTextField();
+    static {
+        enterField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    calculationEvent();
+                }
+            }
+        });
+        enterField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                errorLabelCleanEvent();
+                resultLabelCleanEvent();
+            }
 
-    private static final JButton equalsButton = new JButton();
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                errorLabelCleanEvent();
+                resultLabelCleanEvent();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                errorLabelCleanEvent();
+                resultLabelCleanEvent();
+            }
+        });
+    }
+
+    private static final JButton equalsButton = new JButton(new EnterFieldAction());
 
     private static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -28,6 +64,8 @@ public class GUI {
 
     private static final int MINIMUM_WIDTH  = 1200;
     private static final int MINIMUM_HEIGHT = 600;
+
+    private static final Expression calculator = new Expression();
 
     public static GUI getInstance() {
         if (gui == null) {
@@ -45,6 +83,7 @@ public class GUI {
                 whatDoLabel,
                 enterLabel,
                 resultLabel,
+                errorLabel,
                 enterField,
                 equalsButton,
                 mainPanel
@@ -54,6 +93,7 @@ public class GUI {
                 whatDoLabel,
                 enterLabel,
                 resultLabel,
+                errorLabel,
                 enterField,
                 equalsButton,
                 mainPanel
@@ -94,6 +134,7 @@ public class GUI {
             setHelloLabelSettings();
             setWhatDoLabelSettings();
             setEnterLabelSettings();
+            setErrorLabelSettings();
             setEnterFieldSettings();
             setEqualsButtonSettings();
             setResultLabelSettings();
@@ -127,12 +168,19 @@ public class GUI {
         }
 
         private void setResultLabelSettings() {
-            resultLabel.setText("result");
             resultLabel.setHorizontalAlignment(SwingConstants.LEFT);
             resultLabel.setVerticalAlignment(SwingConstants.CENTER);
             resultLabel.setBounds(this.getWidth() / 24 + 365, this.getHeight() / 3, 100, 30);
-            equalsButton.setFont(new Font("Arial", Font.BOLD, 20));
-            equalsButton.setForeground(new Color(68, 68, 68));
+            resultLabel.setFont(new Font("Arial", Font.BOLD, 20));
+            resultLabel.setForeground(new Color(68, 68, 68));
+        }
+
+        private void setErrorLabelSettings() {
+            errorLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            errorLabel.setVerticalAlignment(SwingConstants.CENTER);
+            errorLabel.setBounds(this.getWidth() / 24, (int) (this.getHeight() / 2.5), 300, 80);
+            errorLabel.setFont(new Font("Arial", Font.BOLD, 18));
+            errorLabel.setForeground(new Color(68, 68, 68));
         }
 
         private void setEnterFieldSettings() {
@@ -147,5 +195,33 @@ public class GUI {
             equalsButton.setFont(new Font("Arial", Font.BOLD, 20));
             equalsButton.setForeground(new Color(68, 68, 68));
         }
+    }
+
+    private static class EnterFieldAction extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            calculationEvent();
+        }
+    }
+
+    private static void calculationEvent() {
+        try {
+            String expression = enterField.getText();
+            resultLabel.setText(Double.toString(calculator.calculate(expression)));
+        }
+        catch (RuntimeException runtimeException) {
+            errorLabel.setText("<html><p align=\"center\">"
+                    + runtimeException.getMessage()
+                    + "<br>please, try again</p></html>");
+        }
+    }
+
+    private static void errorLabelCleanEvent() {
+        errorLabel.setText("");
+    }
+
+    private static void resultLabelCleanEvent() {
+        resultLabel.setText("");
     }
 }

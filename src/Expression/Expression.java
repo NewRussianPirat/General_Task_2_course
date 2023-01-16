@@ -1,5 +1,6 @@
 package Expression;
 
+import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -20,9 +21,9 @@ public class Expression {
             case '*' : return first * second;
             case '/' : {
                 if (second == 0) {
-                    throw new ArithmeticException("Division by zero");
+                    throw new RuntimeException("Division by zero");
                 }
-                return  first / second;
+                return first / second;
             }
             default: return 0;
         }
@@ -50,13 +51,23 @@ public class Expression {
             }
             else if (operators.containsKey(c)) {
                 if (c == '~') {
-                    double a = doubleStack.pop();
-                    doubleStack.push(-a);
+                    try {
+                        double a = doubleStack.pop();
+                        doubleStack.push(-a);
+                    }
+                    catch (EmptyStackException e) {
+                        throw new RuntimeException("Wrong expression format");
+                    }
                 }
                 else {
-                    double second = doubleStack.pop();
-                    double first = doubleStack.pop();
-                    doubleStack.push(operate(c, first, second));
+                    try {
+                        double second = doubleStack.pop();
+                        double first = doubleStack.pop();
+                        doubleStack.push(operate(c, first, second));
+                    }
+                    catch (EmptyStackException e) {
+                        throw new RuntimeException("Wrong expression format");
+                    }
                 }
             }
         }
@@ -88,11 +99,14 @@ public class Expression {
                 lastSymbol = '(';
             }
             else if (c == ')') {
+                if (lastSymbol == '(') {
+                    throw new RuntimeException("Wrong expression format");
+                }
                 while (!operatorsStack.empty() && operatorsStack.peek() != '(') {
                     stringBuilder.append(operatorsStack.pop());
                 }
                 if (operatorsStack.empty()) {
-                    throw new RuntimeException("Wrong number of parentheses");
+                    throw new RuntimeException("Wrong combination of parentheses");
                 }
                 operatorsStack.pop();
                 lastSymbol = ')';
@@ -116,7 +130,7 @@ public class Expression {
 
         while (!operatorsStack.empty()) {
             if (operatorsStack.peek() == '(') {
-                throw new RuntimeException("Wrong number of parentheses");
+                throw new RuntimeException("Wrong combination of parentheses");
             }
             stringBuilder.append(operatorsStack.pop());
         }

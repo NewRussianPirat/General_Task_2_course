@@ -2,7 +2,6 @@ package UIs;
 
 import javax.swing.*;
 import java.awt.*;
-
 public class GUI {
 
     private static GUI gui = null;
@@ -11,6 +10,10 @@ public class GUI {
     private static final GUI_Panel mainPanel = new GUI_Panel();
     private static final JLabel helloLabel = new JLabel(
             "Welcome to my Super Calculator!",
+            SwingConstants.CENTER
+    );
+    private static final JLabel whatDoLabel = new JLabel(
+            "Please, choose how you want to enter expression",
             SwingConstants.CENTER
     );
 
@@ -35,9 +38,14 @@ public class GUI {
 
     public void createGUI() {
         setDefaultWindowSettings();
-        helloLabel.setVisible(true);
-        addAll(
+        setVisibleTrue(
                 helloLabel,
+                whatDoLabel,
+                mainPanel
+        );
+        add(
+                helloLabel,
+                whatDoLabel,
                 mainPanel
         );
     }
@@ -51,9 +59,16 @@ public class GUI {
     }
 
     @SafeVarargs
-    private static <T extends JComponent> void addAll(T ... args) {
+    private static <T extends JComponent> void add(T ... args) {
         for (var jComponent : args) {
             mainWindow.add(jComponent);
+        }
+    }
+
+    @SafeVarargs
+    private static <T extends JComponent> void setVisibleTrue(T ... args) {
+        for (var jComponent : args) {
+            jComponent.setVisible(true);
         }
     }
 
@@ -61,9 +76,19 @@ public class GUI {
 
         @Override
         protected void paintComponent(Graphics g) {
-            Graphics2D graphics2D = (Graphics2D) g;
+//            Graphics2D graphics2D = (Graphics2D) g;
             this.setBounds(0, 0, mainWindow.getWidth(), mainWindow.getHeight());
-            helloLabel.setBounds(this.getWidth() / 2 - 300, 50 , 600, 100);
+
+            this.setBackground(new Color(232, 232, 232));
+
+            helloLabel.setBounds(this.getWidth() / 2 - 160, 25 , 320, 50);
+            helloLabel.setFont(new Font("Arial", Font.BOLD, 20));
+            helloLabel.setForeground(new Color(68, 68, 68));
+
+            whatDoLabel.setBounds(this.getWidth() / 2 - 300, 75 , 600, 50);
+            whatDoLabel.setFont(new Font("Arial", Font.BOLD, 20));
+            whatDoLabel.setForeground(new Color(68, 68, 68));
+
             this.setLayout(null);
         }
     }

@@ -15,7 +15,7 @@ public class Encryption {
     protected int KEY_OFFSET = 0;
     protected int KEY_LENGTH = 16;
     protected String ENC_TYPE = ".enc";
-    protected String MODULE_NAME = "outputFiles";
+    protected String DIRECTORY_NAME = "outputFiles";
 
     public void encrypt(String filename) {
         try {
@@ -26,7 +26,7 @@ public class Encryption {
             byte[] cipherText = cipherEncrypted.doFinal(fileInputStream.readAllBytes());
             fileInputStream.close();
             FileOutputStream fileOutputStream = new FileOutputStream(
-                    MODULE_NAME +
+                    DIRECTORY_NAME +
                             filename.substring(filename.lastIndexOf('/')) +
                             ENC_TYPE
             );

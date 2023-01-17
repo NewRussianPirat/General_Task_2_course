@@ -9,13 +9,12 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class GUI {
 
     private static GUI gui = null;
 
-    private static final Expression calculator = new Expression();
-    private static FileReaders fileReaders;
     private static FileWriters fileWriters = new FileWritersTXT();
 
     private static final JFrame mainWindow = new JFrame();
@@ -25,10 +24,14 @@ public class GUI {
     private static final JLabel helloLabel = new JLabel();
     private static final JLabel whatDoLabel = new JLabel();
     private static final JLabel enterLabel = new JLabel();
-    private static final JLabel resultLabel = new JLabel();
+    private static final JLabel resultOwnEnterLabel = new JLabel();
     private static final JLabel errorLabel = new JLabel();
     private static final JLabel chooseFileLabel = new JLabel();
     private static final JLabel chosenWriteFile = new JLabel();
+    private static final JLabel resultFileReadLabel = new JLabel();
+    static {
+        resultFileReadLabel.setVisible(false);
+    }
 
     private static final JTextField enterField = new JTextField();
     static {
@@ -36,7 +39,7 @@ public class GUI {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    calculationEvent();
+                    calculationOwnEnterEvent();
                 }
             }
         });
@@ -61,28 +64,34 @@ public class GUI {
         });
     }
 
+    private static final JButton fileReadButton = new JButton(new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            calculationFileReadEvent();
+        }
+    });
     private static final JButton equalsButton = new JButton(new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            calculationEvent();
+            calculationOwnEnterEvent();
         }
     });
     private static final JButton TXTButton = new JButton(new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            chooseFileEvent(".txt");
+            chooseFileWriteEvent(".txt");
         }
     });
     private static final JButton XMLButton = new JButton(new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            chooseFileEvent(".xml");
+            chooseFileWriteEvent(".xml");
         }
     });
     private static final JButton JSONButton = new JButton(new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            chooseFileEvent(".json");
+            chooseFileWriteEvent(".json");
         }
     });
     private static final JButton stopWritingButton = new JButton(new AbstractAction() {
@@ -91,9 +100,6 @@ public class GUI {
             stopWritingEvent();
         }
     });
-    static {
-        stopWritingButton.setEnabled(false);
-    }
 
     private static final JCheckBox fileWriterCheckBox = new JCheckBox();
     static {
@@ -124,7 +130,8 @@ public class GUI {
     }
 
 
-    private static final JFileChooser fileChooser = new JFileChooser("outputFiles/");
+    private static final JFileChooser fileWriteChooser = new JFileChooser("outputFiles\\");
+    private static final JFileChooser fileReadChooser = new JFileChooser("inputFiles\\");
 
     private static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -153,11 +160,13 @@ public class GUI {
                     helloLabel,
                     whatDoLabel,
                     enterLabel,
-                    resultLabel,
+                    resultOwnEnterLabel,
                     errorLabel,
+                    resultFileReadLabel,
                     chooseFileLabel,
                     chosenWriteFile,
                     enterField,
+                    fileReadButton,
                     equalsButton,
                     fileWriterCheckBox,
                     overwriteFileCheckBox,
@@ -168,12 +177,14 @@ public class GUI {
                     helloLabel,
                     whatDoLabel,
                     enterLabel,
-                    resultLabel,
+                    resultOwnEnterLabel,
                     errorLabel,
                     chooseFileLabel,
+                    resultFileReadLabel,
                     chosenWriteFile,
                     enterField,
                     equalsButton,
+                    fileReadButton,
                     TXTButton,
                     XMLButton,
                     JSONButton,
@@ -234,6 +245,7 @@ public class GUI {
             setChooseFileLabelSettings();
             setEnterFieldSettings();
             setEqualsButtonSettings();
+            setFileReadButtonSettings();
             setTXTButtonSettings();
             setXMLButtonSettings();
             setJSONButtonSettings();
@@ -241,6 +253,7 @@ public class GUI {
             setFileWriterCheckBoxSettings();
             setOverWriteCheckBoxSettings();
             setChosenWriteFileLabelSettings();
+            setResultFileWriteLabelSettings();
         }
 
         private void setHelloLabelSettings() {
@@ -271,11 +284,11 @@ public class GUI {
         }
 
         private void setResultLabelSettings() {
-            resultLabel.setHorizontalAlignment(SwingConstants.LEFT);
-            resultLabel.setVerticalAlignment(SwingConstants.CENTER);
-            resultLabel.setBounds(this.getWidth() / 24 + 315, this.getHeight() / 3, 100, 30);
-            resultLabel.setFont(new Font("Arial", Font.BOLD, 20));
-            resultLabel.setForeground(new Color(68, 68, 68));
+            resultOwnEnterLabel.setHorizontalAlignment(SwingConstants.LEFT);
+            resultOwnEnterLabel.setVerticalAlignment(SwingConstants.CENTER);
+            resultOwnEnterLabel.setBounds(this.getWidth() / 24 + 315, this.getHeight() / 3, 100, 30);
+            resultOwnEnterLabel.setFont(new Font("Arial", Font.BOLD, 20));
+            resultOwnEnterLabel.setForeground(new Color(68, 68, 68));
         }
 
         private void setErrorLabelSettings() {
@@ -303,8 +316,26 @@ public class GUI {
             chosenWriteFile.setForeground(new Color(68, 68, 68));
         }
 
+        private void setResultFileWriteLabelSettings() {
+            resultFileReadLabel.setHorizontalAlignment(SwingConstants.LEFT);
+            resultFileReadLabel.setVerticalAlignment(SwingConstants.NORTH);
+            resultFileReadLabel.setBounds(fileReadButton.getX(), fileReadButton.getY() + 35, this.getWidth() - fileReadButton.getX() - 20, this.getHeight() - fileReadButton.getY() - 35);
+            resultFileReadLabel.setFont(new Font("Arial", Font.BOLD, 15));
+            resultFileReadLabel.setForeground(new Color(68, 68, 68));
+        }
+
         private void setEnterFieldSettings() {
             enterField.setBounds(this.getWidth() / 24, this.getHeight() / 3 , 250, 30);
+        }
+
+        private void setFileReadButtonSettings() {
+            fileReadButton.setText("Choose file");
+            fileReadButton.setHorizontalAlignment(SwingConstants.CENTER);
+            fileReadButton.setVerticalAlignment(SwingConstants.CENTER);
+            fileReadButton.setBounds(this.getWidth() - 400, this.getHeight() / 3, 300, 30);
+            fileReadButton.setFont(new Font("Arial", Font.BOLD, 20));
+            fileReadButton.setForeground(new Color(68, 68, 68));
+            fileReadButton.setFocusable(false);
         }
 
         private void setEqualsButtonSettings() {
@@ -376,18 +407,21 @@ public class GUI {
         }
     }
 
-    private static void calculationEvent() {
+    private static void calculationOwnEnterEvent() {
         try {
             String expression = enterField.getText();
-            String result = String.format("%.5f", calculator.calculate(expression));
+            String result = String.format("%.5f", Expression.calculate(expression));
             if (fileWriterCheckBox.isSelected()) {
                 if (fileWriters == null || !fileWriters.isActive()) {
                     errorLabel.setText("Please, select file first");
                     return;
                 }
                 fileWriters.writeFile(result);
+                if (fileWriters.getClass() == FileWritersTXT.class) {
+                    fileWriters.writeFile("\n");
+                }
             }
-            resultLabel.setText(result);
+            resultOwnEnterLabel.setText(result);
         }
         catch (RuntimeException runtimeException) {
             errorLabel.setText("<html><p align=\"center\">"
@@ -396,12 +430,45 @@ public class GUI {
         }
     }
 
+    private static void calculationFileReadEvent() {
+        try {
+            if (fileWriterCheckBox.isSelected()) {
+                if (fileWriters == null || !fileWriters.isActive()) {
+                    resultFileReadLabel.setText("Please, select file first");
+                    return;
+                }
+            }
+            fileReadChooser.setVisible(true);
+            int option = fileReadChooser.showOpenDialog(null);
+            if (option == JFileChooser.APPROVE_OPTION) {
+                String filename = fileReadChooser.getSelectedFile().getPath();
+                ArrayList<String> arrayList = FileReaders.readFile(filename);
+                StringBuilder stringBuilder = new StringBuilder("<html><p align=left>");
+                for (String s : arrayList) {
+                    String result = String.format("%.5f", Expression.calculate(s));
+                    stringBuilder.append(s).append(" = ").append(result).append("<br>");
+                    if (fileWriterCheckBox.isSelected()) {
+                        fileWriters.writeFile(result);
+                        if (fileWriters.getClass() == FileWritersTXT.class) {
+                            fileWriters.writeFile("\n");
+                        }
+                    }
+                }
+                stringBuilder.append("</p></html>");
+                resultFileReadLabel.setText(stringBuilder.toString());
+            }
+        }
+        catch (RuntimeException e) {
+            resultFileReadLabel.setText(e.getMessage());
+        }
+    }
+
     private static void errorLabelCleanEvent() {
         errorLabel.setText("");
     }
 
     private static void resultLabelCleanEvent() {
-        resultLabel.setText("");
+        resultOwnEnterLabel.setText("");
     }
 
     private static void showFileWritersEvent() {
@@ -459,12 +526,12 @@ public class GUI {
         }
     }
 
-    private static void chooseFileEvent(String format) {
-        fileChooser.setVisible(true);
-        int option = fileChooser.showSaveDialog(null);
+    private static void chooseFileWriteEvent(String format) {
+        fileWriteChooser.setVisible(true);
+        int option = fileWriteChooser.showSaveDialog(null);
         if (option == JFileChooser.APPROVE_OPTION) {
-            if (!fileChooser.getSelectedFile().getName().substring(
-                            fileChooser.getSelectedFile().getName().lastIndexOf('.'))
+            if (!fileWriteChooser.getSelectedFile().getName().substring(
+                            fileWriteChooser.getSelectedFile().getName().lastIndexOf('.'))
                     .equals(format)
             ) {
                 WrongFormatDialog wrongFormatDialog = new WrongFormatDialog(format);
@@ -474,15 +541,15 @@ public class GUI {
             try {
                 switch (format) {
                     case ".txt" -> fileWriters = new FileWritersTXT (
-                            fileChooser.getSelectedFile().getPath(),
+                            fileWriteChooser.getSelectedFile().getPath(),
                             fileWriters.getOverwrite()
                     );
                     case ".xml" -> fileWriters = new FileWritersXML(
-                            fileChooser.getSelectedFile().getPath(),
+                            fileWriteChooser.getSelectedFile().getPath(),
                             fileWriters.getOverwrite()
                     );
                     case ".json" -> fileWriters = new FileWritersJSON(
-                            fileChooser.getSelectedFile().getPath(),
+                            fileWriteChooser.getSelectedFile().getPath(),
                             fileWriters.getOverwrite()
                     );
                 }

@@ -29,7 +29,7 @@ public class FileReadersZIP extends FileReaders {
             ZipEntry zipEntry;
             String filename = "";
             if ((zipEntry = zipInputStream.getNextEntry()) != null) {
-                filename = "intermediateFiles/" + zipEntry.getName();
+                filename = "intermediateFiles\\" + zipEntry.getName();
             }
             FileOutputStream fileOutputStream = new FileOutputStream(filename);
             fileOutputStream.write(zipInputStream.readAllBytes());

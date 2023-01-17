@@ -7,6 +7,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -41,10 +42,12 @@ public class FileReadersENC extends FileReaders {
             cipherDecrypted.init(Cipher.DECRYPT_MODE, key);
             byte[] cipherDecryptedText = cipherDecrypted.doFinal(fileInputStream.readAllBytes());
             fileInputStream.close();
-            String filename = "intermediateFiles/" + this.getFilename().substring(
-                    Math.max(0, this.filename.lastIndexOf('/')),
-                    this.filename.lastIndexOf('.')
+            String filename = "intermediateFiles\\" + this.getFilename().substring(
+                    Math.max(0, FileReaders.filename.lastIndexOf('\\')),
+                    FileReaders.filename.lastIndexOf('.')
             );
+            FileWriter fileWriter = new FileWriter(filename);
+            fileWriter.close();
             FileOutputStream fileOutputStream = new FileOutputStream(filename);
             fileOutputStream.write(cipherDecryptedText);
             fileOutputStream.close();

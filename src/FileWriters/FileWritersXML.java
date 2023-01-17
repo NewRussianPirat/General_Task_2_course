@@ -70,7 +70,6 @@ public class FileWritersXML extends FileWriters {
         }
     }
 
-
     @Override
     public void writeFile(String string) {
         Element result = document.createElement("result");

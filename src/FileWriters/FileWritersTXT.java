@@ -32,7 +32,7 @@ public class FileWritersTXT extends FileWriters {
     @Override
     public void writeFile(String string) {
         try {
-            fileWriter.write(string + '\n');
+            fileWriter.write(string);
         }
         catch (IOException e) {
             throw new RuntimeException(e);

@@ -10,8 +10,6 @@ import java.util.Scanner;
 public class CUI {
 
      private static CUI cui;
-     Expression expression = new Expression();
-     FileReaders fileReaders;
      FileWriters fileWriters;
 
      public static CUI getInstance() {
@@ -79,29 +77,14 @@ public class CUI {
                          String string = scanner.nextLine();
                          expressions.add(string);
                      }
-                     case '2' -> {
-                         fileReaders = new FileReadersTXT();
-                         expressions = fileReaders.readFile("inputFiles/input.txt");
-                     }
-                     case '3' -> {
-                         fileReaders = new FileReadersXML();
-                         expressions = fileReaders.readFile("inputFiles/input.xml");
-                     }
-                     case '4' -> {
-                         fileReaders = new FileReadersJSON();
-                         expressions = fileReaders.readFile("inputFiles/input.json");
-                     }
-                     case '5' -> {
-                         fileReaders = new FileReadersZIP();
-                         expressions = fileReaders.readFile("inputFiles/input.zip");
-                     }
-                     case '6' -> {
-                         fileReaders = new FileReadersENC();
-                         expressions = fileReaders.readFile("inputFiles/input.txt.enc");
-                     }
+                     case '2' -> expressions = FileReaders.readFile("inputFiles\\input.txt");
+                     case '3' -> expressions = FileReaders.readFile("inputFiles\\input.xml");
+                     case '4' -> expressions = FileReaders.readFile("inputFiles\\input.json");
+                     case '5' -> expressions = FileReaders.readFile("inputFiles\\input.zip");
+                     case '6' -> expressions = FileReaders.readFile("inputFiles\\input.txt.enc");
                  }
                  for (String s : expressions) {
-                     result.add(expression.calculate(s));
+                     result.add(Expression.calculate(s));
                  }
                  if (cout == '1') {
                      for (var s : result) {
@@ -111,15 +94,15 @@ public class CUI {
                      String filename = null;
                      switch (cout) {
                          case '2' -> {
-                             filename = "outputFiles/output.txt";
+                             filename = "outputFiles\\output.txt";
                              fileWriters = new FileWritersTXT(filename);
                          }
                          case '3' -> {
-                             filename = "outputFiles/output.xml";
+                             filename = "outputFiles\\output.xml";
                              fileWriters = new FileWritersXML(filename);
                          }
                          case '4' -> {
-                             filename = "outputFiles/output.json";
+                             filename = "outputFiles\\output.json";
                              fileWriters = new FileWritersJSON(filename);
                          }
                      }

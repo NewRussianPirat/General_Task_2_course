@@ -4,14 +4,14 @@ import java.util.ArrayList;
 
 public abstract class FileReaders {
 
-    protected String filename;
+    protected static String filename;
 
-    protected final String TXT_TYPE = ".txt";
-    protected final String XML_TYPE = ".xml";
-    protected final String JSON_TYPE = ".json";
-    protected final String ZIP_TYPE = ".zip";
-    protected final String RAR_TYPE = ".rar";
-    protected final String ENC_TYPE = ".enc";
+    protected static final String TXT_TYPE = ".txt";
+    protected static final String XML_TYPE = ".xml";
+    protected static final String JSON_TYPE = ".json";
+    protected static final String ZIP_TYPE = ".zip";
+    protected static final String RAR_TYPE = ".rar";
+    protected static final String ENC_TYPE = ".enc";
 
     protected FileReaders() {
         filename = "";
@@ -19,9 +19,8 @@ public abstract class FileReaders {
 
     protected FileReaders(String filename1) { filename = filename1; }
 
-    public ArrayList<String> readFile(String filename) {
-
-        FileReaders fileReaders = createFileReader(filename);
+    public static ArrayList<String> readFile(String filename1) {
+        FileReaders fileReaders = createFileReader(filename1);
 
         if (fileReaders == null) {
             throw new RuntimeException("Wrong file type");
@@ -31,7 +30,7 @@ public abstract class FileReaders {
             fileReaders = fileReaders.unpacking();
             fileReaders = fileReaders.decrypting();
         }
-        
+
         return fileReaders.getInfo();
     }
 
@@ -41,7 +40,7 @@ public abstract class FileReaders {
     abstract protected boolean isPacked();
     abstract protected boolean isEncrypted();
 
-    protected String getFileType(String filename) {
+    protected static String getFileType(String filename) {
         return filename.substring(filename.lastIndexOf('.'));
     }
 
@@ -49,15 +48,17 @@ public abstract class FileReaders {
         return filename;
     }
 
-    protected FileReaders createFileReader(String filename) {
-        String type = getFileType(filename);
+    protected static FileReaders createFileReader(String filename1) {
+
+        filename = filename1;
+        String type = getFileType(filename1);
         switch (type) {
-            case TXT_TYPE -> { return new FileReadersTXT(filename); }
-            case XML_TYPE -> { return new FileReadersXML(filename); }
-            case JSON_TYPE -> { return new FileReadersJSON(filename); }
-            case ZIP_TYPE -> { return new FileReadersZIP(filename); }
+            case TXT_TYPE -> { return new FileReadersTXT(filename1); }
+            case XML_TYPE -> { return new FileReadersXML(filename1); }
+            case JSON_TYPE -> { return new FileReadersJSON(filename1); }
+            case ZIP_TYPE -> { return new FileReadersZIP(filename1); }
 //            case RAR_TYPE -> { return new FileReadersRAR(filename); }
-            case ENC_TYPE -> { return new FileReadersENC(filename); }
+            case ENC_TYPE -> { return new FileReadersENC(filename1); }
             default -> { return null; }
         }
     }

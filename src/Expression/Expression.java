@@ -14,7 +14,7 @@ public class Expression {
         put('~', 3);
     }};
 
-    private double operate(char c, double first, double second) {
+    private static double operate(char c, double first, double second) {
         switch (c) {
             case '+' : return first + second;
             case '-' : return first - second;
@@ -29,7 +29,7 @@ public class Expression {
         }
     }
 
-    public double calculate(String expression) {
+    public static double calculate(String expression) {
         String postfixNotationExpression = createPostfixNotation(expression);
         Stack<Double> doubleStack = new Stack<>();
 
@@ -75,7 +75,7 @@ public class Expression {
         return doubleStack.pop();
     }
     
-    public String createPostfixNotation(String expression) {
+    public static String createPostfixNotation(String expression) {
         if (expression == null || expression.equals("")) {
             throw new RuntimeException("No expression");
         }

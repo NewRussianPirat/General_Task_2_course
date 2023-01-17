@@ -597,7 +597,7 @@ public class GUI {
         private static final JButton encryptButton = new JButton(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                fileWriters = new FileWritersEnc(filename + ".enc");
+                fileWriters = new FileWritersENC(filename + ".enc");
                 fileWriters.writeFile(filename);
                 filename = fileWriters.getFilename();
                 fileWriters.close();

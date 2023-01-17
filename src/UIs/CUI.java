@@ -137,7 +137,7 @@ public class CUI {
                                  fileWriters.close();
                              }
                              case '2' -> {
-                                 fileWriters = new FileWritersEnc(filename + ".enc");
+                                 fileWriters = new FileWritersENC(filename + ".enc");
                                  fileWriters.writeFile(filename);
                                  filename += ".enc";
                              }

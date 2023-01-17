@@ -8,14 +8,14 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-public class FileWritersEnc extends FileWriters {
+public class FileWritersENC extends FileWriters {
 
     protected static final String ENCRYPTING_ALGORITHM = "AES";
     protected static final String KEY = "1111111111111111";
     protected static final int KEY_OFFSET = 0;
     protected static final int KEY_LENGTH = 16;
 
-    public FileWritersEnc(String filename) {
+    public FileWritersENC(String filename) {
         setFilename(filename);
     }
 

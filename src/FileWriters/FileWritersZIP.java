@@ -55,4 +55,9 @@ public class FileWritersZIP extends FileWriters {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public boolean isActive() {
+        return fileOutputStream != null;
+    }
 }

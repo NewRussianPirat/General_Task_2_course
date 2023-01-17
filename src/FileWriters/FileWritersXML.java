@@ -1,61 +1,100 @@
 package FileWriters;
 
-import javax.xml.stream.XMLEventFactory;
-import javax.xml.stream.XMLEventWriter;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
+import org.w3c.dom.Document;
 
 public class FileWritersXML extends FileWriters {
 
-    XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();
-    XMLEventFactory xmlEventFactory = XMLEventFactory.newInstance();
-    OutputStream outputStream;
-    XMLEventWriter xmlEventWriter;
+    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+    DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder documentBuilder;
+    Document document;
+    Element mainElement;
+    String filename;
 
     public FileWritersXML() {
         super();
-        outputStream = null;
-        xmlEventWriter = null;
+        filename = null;
+        documentBuilder = null;
+        document = null;
+        mainElement = null;
     }
+
     public FileWritersXML(String filename1) {
         try {
-            outputStream = new FileOutputStream(filename1, getOverwrite());
-            xmlEventWriter = xmlOutputFactory.createXMLEventWriter(outputStream);
-            xmlEventWriter.add(xmlEventFactory.createStartDocument());
-            xmlEventWriter.add(xmlEventFactory.createStartElement("", "", "results"));
+            filename = filename1;
+            setOverwrite(true);
+            documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            document = documentBuilder.newDocument();
+            mainElement = document.createElement("results");
+            document.appendChild(mainElement);
         }
-        catch (FileNotFoundException | XMLStreamException e) {
+        catch (ParserConfigurationException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public FileWritersXML(String filename1, boolean overwrite1) throws ParserConfigurationException {
+        filename = filename1;
+        setOverwrite(overwrite1);
+        try {
+            if (!getOverwrite()) {
+                documentBuilder = documentBuilderFactory.newDocumentBuilder();
+                document = documentBuilder.parse(filename1);
+                document.getDocumentElement().normalize();
+                NodeList nodeList = document.getElementsByTagName("results");
+                mainElement = (Element) nodeList.item(0);
+            }
+            else {
+                documentBuilder = documentBuilderFactory.newDocumentBuilder();
+                document = documentBuilder.newDocument();
+                mainElement = document.createElement("results");
+                document.appendChild(mainElement);
+            }
+        } catch (ParserConfigurationException | IOException | SAXException e) {
+            documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            document = documentBuilder.newDocument();
+            mainElement = document.createElement("results");
+            document.appendChild(mainElement);
+//            id = 1;
         }
     }
 
 
     @Override
     public void writeFile(String string) {
-        try {
-            xmlEventWriter.add(xmlEventFactory.createStartElement("", "", "result"));
-            xmlEventWriter.add(xmlEventFactory.createCharacters(string));
-            xmlEventWriter.add(xmlEventFactory.createEndElement("", "", "result"));
-        }
-        catch (XMLStreamException e) {
-            throw new RuntimeException(e);
-        }
+        Element result = document.createElement("result");
+        result.appendChild(document.createTextNode(string));
+        mainElement.appendChild(result);
     }
 
     @Override
     public void close() {
         try {
-            xmlEventWriter.add(xmlEventFactory.createEndElement("", "", "results"));
-            xmlEventWriter.add(xmlEventFactory.createEndDocument());
-            xmlEventWriter.flush();
-            xmlEventWriter.close();
-            outputStream.close();
-        } catch (XMLStreamException | IOException e) {
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource domSource = new DOMSource(document);
+            StreamResult streamResult = new StreamResult(new File(filename));
+            transformer.transform(domSource, streamResult);
+        } catch (TransformerException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public boolean isActive() {
+        return filename != null;
     }
 }

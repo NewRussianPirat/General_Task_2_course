@@ -17,10 +17,20 @@ public class FileWritersTXT extends FileWriters {
         }
     }
 
+    public FileWritersTXT(String filename1, boolean overwrite1) {
+        setOverwrite(overwrite1);
+        try {
+            fileWriter = new FileWriter(filename1, getOverwrite());
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public void writeFile(String string) {
         try {
-            fileWriter.write(string);
+            fileWriter.write(string + '\n');
         }
         catch (IOException e) {
             throw new RuntimeException(e);
@@ -35,5 +45,10 @@ public class FileWritersTXT extends FileWriters {
         catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public boolean isActive() {
+        return fileWriter != null;
     }
 }

@@ -16,10 +16,7 @@ public class GUI {
 
     private static final Expression calculator = new Expression();
     private static FileReaders fileReaders;
-    private static FileWriters fileWritersTXT = new FileWritersTXT();
-    private static final FileWriters fileWritersXML = new FileWritersXML();
-    private static final FileWriters fileWritersJSON = new FileWritersJSON();
-    private static final FileWriters fileWritersZIP = new FileWritersZIP();
+    private static FileWriters fileWriters = new FileWritersTXT();
 
     private static final JFrame mainWindow = new JFrame();
 
@@ -31,6 +28,7 @@ public class GUI {
     private static final JLabel resultLabel = new JLabel();
     private static final JLabel errorLabel = new JLabel();
     private static final JLabel chooseFileLabel = new JLabel();
+    private static final JLabel chosenWriteFile = new JLabel();
 
     private static final JTextField enterField = new JTextField();
     static {
@@ -72,22 +70,30 @@ public class GUI {
     private static final JButton TXTButton = new JButton(new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            chooseTXTEvent();
+            chooseFileEvent(".txt");
         }
     });
     private static final JButton XMLButton = new JButton(new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            chooseXMLEvent();
+            chooseFileEvent(".xml");
         }
     });
     private static final JButton JSONButton = new JButton(new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            chooseJSONEvent();
+            chooseFileEvent(".json");
         }
     });
-
+    private static final JButton stopWritingButton = new JButton(new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            stopWritingEvent();
+        }
+    });
+    static {
+        stopWritingButton.setEnabled(false);
+    }
 
     private static final JCheckBox fileWriterCheckBox = new JCheckBox();
     static {
@@ -104,23 +110,21 @@ public class GUI {
     static {
         overwriteFileCheckBox.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                fileWritersTXT.setOverwrite(true);
-                fileWritersXML.setOverwrite(true);
-                fileWritersJSON.setOverwrite(true);
-                fileWritersZIP.setOverwrite(true);
+                fileWriters.setOverwrite(true);
+                fileWriters.setOverwrite(true);
+                fileWriters.setOverwrite(true);
             }
             else {
-                fileWritersTXT.setOverwrite(false);
-                fileWritersXML.setOverwrite(false);
-                fileWritersJSON.setOverwrite(false);
-                fileWritersZIP.setOverwrite(false);
+                fileWriters.setOverwrite(false);
+                fileWriters.setOverwrite(false);
+                fileWriters.setOverwrite(false);
 
             }
         });
     }
 
 
-    private static final JFileChooser TXTFileChooser = new JFileChooser("outputFiles/");
+    private static final JFileChooser fileChooser = new JFileChooser("outputFiles/");
 
     private static final Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -152,6 +156,7 @@ public class GUI {
                     resultLabel,
                     errorLabel,
                     chooseFileLabel,
+                    chosenWriteFile,
                     enterField,
                     equalsButton,
                     fileWriterCheckBox,
@@ -166,11 +171,13 @@ public class GUI {
                     resultLabel,
                     errorLabel,
                     chooseFileLabel,
+                    chosenWriteFile,
                     enterField,
                     equalsButton,
                     TXTButton,
                     XMLButton,
                     JSONButton,
+                    stopWritingButton,
                     fileWriterCheckBox,
                     overwriteFileCheckBox,
                     mainPanel
@@ -230,8 +237,10 @@ public class GUI {
             setTXTButtonSettings();
             setXMLButtonSettings();
             setJSONButtonSettings();
+            setStopWritingButtonSettings();
             setFileWriterCheckBoxSettings();
             setOverWriteCheckBoxSettings();
+            setChosenWriteFileLabelSettings();
         }
 
         private void setHelloLabelSettings() {
@@ -286,6 +295,14 @@ public class GUI {
             chooseFileLabel.setForeground(new Color(68, 68, 68));
         }
 
+        private void setChosenWriteFileLabelSettings() {
+            chosenWriteFile.setHorizontalAlignment(SwingConstants.LEFT);
+            chosenWriteFile.setVerticalAlignment(SwingConstants.CENTER);
+            chosenWriteFile.setBounds(TXTButton.getX(), TXTButton.getY() + 35, 200, 30);
+            chosenWriteFile.setFont(new Font("Arial", Font.BOLD, 15));
+            chosenWriteFile.setForeground(new Color(68, 68, 68));
+        }
+
         private void setEnterFieldSettings() {
             enterField.setBounds(this.getWidth() / 24, this.getHeight() / 3 , 250, 30);
         }
@@ -328,6 +345,16 @@ public class GUI {
             JSONButton.setFocusable(false);
         }
 
+        private void setStopWritingButtonSettings() {
+            stopWritingButton.setText("Stop writing");
+            stopWritingButton.setHorizontalAlignment(SwingConstants.CENTER);
+            stopWritingButton.setVerticalAlignment(SwingConstants.CENTER);
+            stopWritingButton.setBounds(chosenWriteFile.getX(), chosenWriteFile.getY() + 35, 200, 30);
+            stopWritingButton.setFont(new Font("Arial", Font.BOLD, 15));
+            stopWritingButton.setForeground(new Color(68, 68, 68));
+            stopWritingButton.setFocusable(false);
+        }
+
         private void setFileWriterCheckBoxSettings() {
             fileWriterCheckBox.setText("Write results in a file");
             fileWriterCheckBox.setHorizontalAlignment(SwingConstants.LEFT);
@@ -342,7 +369,7 @@ public class GUI {
             overwriteFileCheckBox.setText("Overwrite file if it already exists");
             overwriteFileCheckBox.setHorizontalAlignment(SwingConstants.LEFT);
             overwriteFileCheckBox.setVerticalAlignment(SwingConstants.CENTER);
-            overwriteFileCheckBox.setBounds(this.getWidth() / 24, (int)(this.getHeight() / 1.4), 250, 30);
+            overwriteFileCheckBox.setBounds(this.getWidth() / 24, (int)(this.getHeight() / 1.2), 250, 30);
             overwriteFileCheckBox.setFont(new Font("Arial", Font.BOLD, 13));
             overwriteFileCheckBox.setForeground(new Color(68, 68, 68));
             overwriteFileCheckBox.setFocusable(false);
@@ -352,7 +379,15 @@ public class GUI {
     private static void calculationEvent() {
         try {
             String expression = enterField.getText();
-            resultLabel.setText(String.format("%.5f", calculator.calculate(expression)));
+            String result = String.format("%.5f", calculator.calculate(expression));
+            if (fileWriterCheckBox.isSelected()) {
+                if (fileWriters == null || !fileWriters.isActive()) {
+                    errorLabel.setText("Please, select file first");
+                    return;
+                }
+                fileWriters.writeFile(result);
+            }
+            resultLabel.setText(result);
         }
         catch (RuntimeException runtimeException) {
             errorLabel.setText("<html><p align=\"center\">"
@@ -374,7 +409,8 @@ public class GUI {
                 overwriteFileCheckBox,
                 TXTButton,
                 XMLButton,
-                JSONButton
+                JSONButton,
+                stopWritingButton
         );
     }
 
@@ -383,7 +419,8 @@ public class GUI {
                 overwriteFileCheckBox,
                 TXTButton,
                 XMLButton,
-                JSONButton
+                JSONButton,
+                stopWritingButton
         );
     }
 
@@ -422,30 +459,54 @@ public class GUI {
         }
     }
 
-    private static void chooseTXTEvent() {
-        TXTFileChooser.setVisible(true);
-        int option = TXTFileChooser.showSaveDialog(null);
+    private static void chooseFileEvent(String format) {
+        fileChooser.setVisible(true);
+        int option = fileChooser.showSaveDialog(null);
         if (option == JFileChooser.APPROVE_OPTION) {
-            if (!TXTFileChooser.getSelectedFile().getName().substring(
-                    TXTFileChooser.getSelectedFile().getName().lastIndexOf('.'))
-                    .equals(".txt")
+            if (!fileChooser.getSelectedFile().getName().substring(
+                            fileChooser.getSelectedFile().getName().lastIndexOf('.'))
+                    .equals(format)
             ) {
-                WrongFormatDialog wrongFormatDialog = new WrongFormatDialog(".txt");
+                WrongFormatDialog wrongFormatDialog = new WrongFormatDialog(format);
                 wrongFormatDialog.createWrongFormatDialog();
+                return;
             }
             try {
-                fileWritersTXT = new FileWritersTXT(TXTFileChooser.getSelectedFile().getPath());
+                switch (format) {
+                    case ".txt" -> fileWriters = new FileWritersTXT (
+                            fileChooser.getSelectedFile().getPath(),
+                            fileWriters.getOverwrite()
+                    );
+                    case ".xml" -> fileWriters = new FileWritersXML(
+                            fileChooser.getSelectedFile().getPath(),
+                            fileWriters.getOverwrite()
+                    );
+                    case ".json" -> fileWriters = new FileWritersJSON(
+                            fileChooser.getSelectedFile().getPath(),
+                            fileWriters.getOverwrite()
+                    );
+                }
+                chosenWriteFile.setText(format + " has been chosen");
+                overwriteFileCheckBox.setEnabled(false);
+                fileWriterCheckBox.setEnabled(false);
+                TXTButton.setEnabled(false);
+                XMLButton.setEnabled(false);
+                JSONButton.setEnabled(false);
+                stopWritingButton.setEnabled(true);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
     }
 
-    private static void chooseXMLEvent() {
-
-    }
-
-    private static void chooseJSONEvent() {
-
+    private static void stopWritingEvent() {
+        chosenWriteFile.setText("");
+        fileWriters.close();
+        overwriteFileCheckBox.setEnabled(true);
+        fileWriterCheckBox.setEnabled(true);
+        TXTButton.setEnabled(true);
+        XMLButton.setEnabled(true);
+        JSONButton.setEnabled(true);
+        stopWritingButton.setEnabled(false);
     }
 }

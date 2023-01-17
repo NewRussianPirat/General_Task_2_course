@@ -2,15 +2,18 @@ package FileWriters;
 
 public abstract class FileWriters {
 
-    private final String filename;
+    private boolean overwrite = false;
 
-    protected FileWriters() { filename = ""; }
-    protected FileWriters(String filename1) { filename = filename1; }
+    protected FileWriters() {}
 
     abstract public void writeFile(String string);
     abstract public void close();
 
-    public String getFilename() {
-        return filename;
+    public void setOverwrite(boolean overwrite) {
+        this.overwrite = overwrite;
+    }
+
+    public boolean getOverwrite() {
+        return overwrite;
     }
 }

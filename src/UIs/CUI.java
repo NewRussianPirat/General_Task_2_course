@@ -150,7 +150,7 @@ public class CUI {
                              case '1' -> {
                                  fileWriters = new FileWritersZIP(filename + ".zip");
                                  fileWriters.writeFile(filename);
-                                 filename = fileWriters.getFilename();
+                                 filename += ".zip";
                                  fileWriters.close();
                              }
                              case '2' -> {

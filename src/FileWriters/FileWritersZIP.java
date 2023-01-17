@@ -21,9 +21,8 @@ public class FileWritersZIP extends FileWriters {
         zipEntry = null;
     }
     public FileWritersZIP(String filename1) {
-        super(filename1);
         try {
-            fileOutputStream = new FileOutputStream(filename1);
+            fileOutputStream = new FileOutputStream(filename1, getOverwrite());
             zipOutputStream = new ZipOutputStream(fileOutputStream);
             fileInputStream = null;
             zipEntry = null;

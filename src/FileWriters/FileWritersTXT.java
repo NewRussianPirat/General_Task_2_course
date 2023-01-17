@@ -9,9 +9,8 @@ public class FileWritersTXT extends FileWriters {
 
     public FileWritersTXT() { super(); fileWriter = null; }
     public FileWritersTXT(String filename1) {
-        super(filename1);
         try {
-            fileWriter = new FileWriter(filename1);
+            fileWriter = new FileWriter(filename1, getOverwrite());
         }
         catch (IOException e) {
             throw new RuntimeException(e);

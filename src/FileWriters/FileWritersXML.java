@@ -22,9 +22,8 @@ public class FileWritersXML extends FileWriters {
         xmlEventWriter = null;
     }
     public FileWritersXML(String filename1) {
-        super(filename1);
         try {
-            outputStream = new FileOutputStream(filename1);
+            outputStream = new FileOutputStream(filename1, getOverwrite());
             xmlEventWriter = xmlOutputFactory.createXMLEventWriter(outputStream);
             xmlEventWriter.add(xmlEventFactory.createStartDocument());
             xmlEventWriter.add(xmlEventFactory.createStartElement("", "", "results"));

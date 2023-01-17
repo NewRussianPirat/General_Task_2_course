@@ -76,6 +76,9 @@ public class Expression {
     }
     
     public String createPostfixNotation(String expression) {
+        if (expression == null || expression.equals("")) {
+            throw new RuntimeException("No expression");
+        }
         Stack<Character> operatorsStack = new Stack<>();
         StringBuilder stringBuilder = new StringBuilder();
         char lastSymbol = ' ';
@@ -125,6 +128,9 @@ public class Expression {
                     operatorsStack.push(c);
                     lastSymbol = c;
                 }
+            }
+            else if (c != ' ') {
+                throw new RuntimeException("Wrong expression format");
             }
         }
 

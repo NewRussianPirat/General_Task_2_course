@@ -17,9 +17,8 @@ public class FileWritersJSON extends FileWriters {
         jsonArray = null;
     }
     public FileWritersJSON(String filename1) {
-        super(filename1);
         try {
-            fileWriter = new FileWriter(filename1);
+            fileWriter = new FileWriter(filename1, getOverwrite());
             jsonArray = new JSONArray();
         }
         catch (IOException e) {

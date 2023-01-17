@@ -10,12 +10,11 @@ import java.security.NoSuchAlgorithmException;
 
 public class Encryption {
 
-    protected String ENCRYPTING_ALGORITHM = "AES";
-    protected String KEY = "1111111111111111";
-    protected int KEY_OFFSET = 0;
-    protected int KEY_LENGTH = 16;
-    protected String ENC_TYPE = ".enc";
-    protected String DIRECTORY_NAME = "outputFiles";
+    protected static final String ENCRYPTING_ALGORITHM = "AES";
+    protected static final String KEY = "1111111111111111";
+    protected static final int KEY_OFFSET = 0;
+    protected static final int KEY_LENGTH = 16;
+    protected static final String ENC_TYPE = ".enc";
 
     public void encrypt(String filename) {
         try {
@@ -26,7 +25,6 @@ public class Encryption {
             byte[] cipherText = cipherEncrypted.doFinal(fileInputStream.readAllBytes());
             fileInputStream.close();
             FileOutputStream fileOutputStream = new FileOutputStream(
-                    DIRECTORY_NAME +
                             filename.substring(filename.lastIndexOf('/')) +
                             ENC_TYPE
             );

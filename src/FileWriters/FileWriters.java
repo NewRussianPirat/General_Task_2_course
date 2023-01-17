@@ -3,6 +3,7 @@ package FileWriters;
 public abstract class FileWriters {
 
     private boolean overwrite = false;
+    private String filename = null;
 
     protected FileWriters() {}
 
@@ -16,5 +17,13 @@ public abstract class FileWriters {
 
     public boolean getOverwrite() {
         return overwrite;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String string) {
+        this.filename = string;
     }
 }

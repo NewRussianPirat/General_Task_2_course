@@ -154,8 +154,8 @@ public class CUI {
                                  fileWriters.close();
                              }
                              case '2' -> {
-                                 Encryption encryption = new Encryption();
-                                 encryption.encrypt(filename);
+                                 fileWriters = new FileWritersEnc(filename + ".enc");
+                                 fileWriters.writeFile(filename);
                                  filename += ".enc";
                              }
                          }

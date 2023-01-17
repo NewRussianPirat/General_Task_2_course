@@ -500,13 +500,121 @@ public class GUI {
     }
 
     private static void stopWritingEvent() {
-        chosenWriteFile.setText("");
+        String filename = fileWriters.getFilename();
         fileWriters.close();
+        archiveEncryptEvent(filename);
+        chosenWriteFile.setText("");
         overwriteFileCheckBox.setEnabled(true);
         fileWriterCheckBox.setEnabled(true);
         TXTButton.setEnabled(true);
         XMLButton.setEnabled(true);
         JSONButton.setEnabled(true);
         stopWritingButton.setEnabled(false);
+    }
+
+    private static class ArchiveEncryptDialog {
+
+        private static final JDialog archiveEncryptDialog = new JDialog(mainWindow, "Archive or Decrypt", Dialog.DEFAULT_MODALITY_TYPE);
+        private static final JLabel archiveEncryptLabel = new JLabel();
+        private static final JButton archiveButton = new JButton(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fileWriters = new FileWritersZIP(filename + ".zip");
+                fileWriters.writeFile(filename);
+                filename = fileWriters.getFilename();
+                fileWriters.close();
+                archiveEncryptLabel.setText("<html><p align=center>Done<br>" +
+                        "Anything else?</p></html>");
+            }
+        });
+        private static final JButton encryptButton = new JButton(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fileWriters = new FileWritersEnc(filename + ".enc");
+                fileWriters.writeFile(filename);
+                filename = fileWriters.getFilename();
+                fileWriters.close();
+                archiveEncryptLabel.setText("<html><p align=center>Done<br>" +
+                        "Anything else?</p></html>");
+            }
+        });
+        private static final JButton exitButton = new JButton(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                archiveEncryptDialog.dispose();
+            }
+        });
+        private static String filename;
+
+        ArchiveEncryptDialog(String filename1) { filename = filename1; }
+
+        private void createArchiveEncryptDialog() {
+            setArchiveEncryptSettings();
+            setArchiveEncryptLabelSettings();
+            setArchiveButtonSettings();
+            setEncryptButtonSettings();
+            setExitButtonSettings();
+            archiveEncryptDialog.add(archiveEncryptLabel);
+            archiveEncryptDialog.add(archiveButton);
+            archiveEncryptDialog.add(encryptButton);
+            archiveEncryptDialog.add(exitButton);
+            archiveEncryptDialog.setVisible(true);
+        }
+
+        private void setArchiveEncryptSettings() {
+            archiveEncryptDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+            archiveEncryptDialog.setBounds(SCREEN_SIZE.width / 2 - 200, SCREEN_SIZE.height / 2 - 75, 400, 200);
+            archiveEncryptDialog.setLayout(null);
+            archiveEncryptDialog.setResizable(false);
+        }
+
+        private void setArchiveEncryptLabelSettings() {
+            archiveEncryptLabel.setText("<html><p align=center>Do you want to archive<br>" +
+                    "or encrypt output file?</p></html>"
+            );
+            archiveEncryptLabel.setBounds(20, 20, 360, 90);
+            archiveEncryptLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            archiveEncryptLabel.setVerticalAlignment(SwingConstants.CENTER);
+            archiveEncryptLabel.setFont(new Font("Arial", Font.BOLD, 20));
+
+        }
+
+        private void setArchiveButtonSettings() {
+            archiveButton.setText("Archive");
+            archiveButton.setHorizontalAlignment(SwingConstants.CENTER);
+            archiveButton.setVerticalAlignment(SwingConstants.CENTER);
+            archiveButton.setBounds(archiveEncryptLabel.getX() + 15, archiveEncryptLabel.getY() + 100, 100, 30);
+            archiveButton.setFont(new Font("Arial", Font.BOLD, 15));
+            archiveButton.setForeground(new Color(68, 68, 68));
+            archiveButton.setFocusable(false);
+            archiveButton.setVisible(true);
+        }
+
+        private void setEncryptButtonSettings() {
+            encryptButton.setText("Encrypt");
+            encryptButton.setHorizontalAlignment(SwingConstants.CENTER);
+            encryptButton.setVerticalAlignment(SwingConstants.CENTER);
+            encryptButton.setBounds(archiveButton.getX() + 110, archiveEncryptLabel.getY() + 100, 100, 30);
+            encryptButton.setFont(new Font("Arial", Font.BOLD, 15));
+            encryptButton.setForeground(new Color(68, 68, 68));
+            encryptButton.setFocusable(false);
+            encryptButton.setVisible(true);
+        }
+
+        private void setExitButtonSettings() {
+            exitButton.setText("Exit");
+            exitButton.setHorizontalAlignment(SwingConstants.CENTER);
+            exitButton.setVerticalAlignment(SwingConstants.CENTER);
+            exitButton.setBounds(encryptButton.getX() + 110, archiveEncryptLabel.getY() + 100, 100, 30);
+            exitButton.setFont(new Font("Arial", Font.BOLD, 15));
+            exitButton.setForeground(new Color(68, 68, 68));
+            exitButton.setFocusable(false);
+            exitButton.setVisible(true);
+        }
+    }
+
+    private static void archiveEncryptEvent(String filename) {
+        ArchiveEncryptDialog archiveEncryptDialog = new ArchiveEncryptDialog(filename);
+        archiveEncryptDialog.createArchiveEncryptDialog();
     }
 }

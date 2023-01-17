@@ -10,6 +10,7 @@ public class FileWritersTXT extends FileWriters {
     public FileWritersTXT() { super(); fileWriter = null; }
     public FileWritersTXT(String filename1) {
         try {
+            setFilename(filename1);
             fileWriter = new FileWriter(filename1, getOverwrite());
         }
         catch (IOException e) {
@@ -18,9 +19,10 @@ public class FileWritersTXT extends FileWriters {
     }
 
     public FileWritersTXT(String filename1, boolean overwrite1) {
-        setOverwrite(overwrite1);
         try {
-            fileWriter = new FileWriter(filename1, getOverwrite());
+            setFilename(filename1);
+            setOverwrite(overwrite1);
+            fileWriter = new FileWriter(filename1, !getOverwrite());
         }
         catch (IOException e) {
             throw new RuntimeException(e);

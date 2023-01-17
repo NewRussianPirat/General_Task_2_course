@@ -8,15 +8,18 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-public class Encryption {
+public class FileWritersEnc extends FileWriters {
 
     protected static final String ENCRYPTING_ALGORITHM = "AES";
     protected static final String KEY = "1111111111111111";
     protected static final int KEY_OFFSET = 0;
     protected static final int KEY_LENGTH = 16;
-    protected static final String ENC_TYPE = ".enc";
 
-    public void encrypt(String filename) {
+    public FileWritersEnc(String filename) {
+        setFilename(filename);
+    }
+
+    public void writeFile(String filename) {
         try {
             Cipher cipherEncrypted = Cipher.getInstance(ENCRYPTING_ALGORITHM);
             SecretKeySpec key = new SecretKeySpec(KEY.getBytes(), KEY_OFFSET, KEY_LENGTH, ENCRYPTING_ALGORITHM);
@@ -24,10 +27,7 @@ public class Encryption {
             cipherEncrypted.init(Cipher.ENCRYPT_MODE, key);
             byte[] cipherText = cipherEncrypted.doFinal(fileInputStream.readAllBytes());
             fileInputStream.close();
-            FileOutputStream fileOutputStream = new FileOutputStream(
-                            filename.substring(filename.lastIndexOf('/')) +
-                            ENC_TYPE
-            );
+            FileOutputStream fileOutputStream = new FileOutputStream(getFilename());
             fileOutputStream.write(cipherText);
             fileOutputStream.close();
         }
@@ -35,5 +35,13 @@ public class Encryption {
                  IOException | InvalidKeyException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void close() {}
+
+    @Override
+    public boolean isActive() {
+        return false;
     }
 }

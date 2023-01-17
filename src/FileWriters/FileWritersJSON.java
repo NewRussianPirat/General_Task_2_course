@@ -25,6 +25,7 @@ public class FileWritersJSON extends FileWriters {
     }
     public FileWritersJSON(String filename1) {
         try {
+            setFilename(filename1);
             fileWriter = new FileWriter(filename1, getOverwrite());
             results = new JSONObject();
             jsonArray = new JSONArray();
@@ -36,6 +37,7 @@ public class FileWritersJSON extends FileWriters {
     }
 
     public FileWritersJSON(String filename1, boolean overwrite1) throws IOException {
+        setFilename(filename1);
         setOverwrite(overwrite1);
         try {
             if (getOverwrite()) {

@@ -22,6 +22,7 @@ public class FileWritersZIP extends FileWriters {
     }
     public FileWritersZIP(String filename1) {
         try {
+            setFilename(filename1);
             fileOutputStream = new FileOutputStream(filename1, getOverwrite());
             zipOutputStream = new ZipOutputStream(fileOutputStream);
             fileInputStream = null;
@@ -36,7 +37,7 @@ public class FileWritersZIP extends FileWriters {
     public void writeFile(String filename) {
         try {
             fileInputStream = new FileInputStream(filename);
-            zipEntry = new ZipEntry(filename.substring(filename.lastIndexOf('/')));
+            zipEntry = new ZipEntry(filename.substring(filename.lastIndexOf('\\')));
             zipOutputStream.putNextEntry(zipEntry);
             zipOutputStream.write(fileInputStream.readAllBytes());
             zipOutputStream.closeEntry();

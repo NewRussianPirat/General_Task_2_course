@@ -23,11 +23,9 @@ public class FileWritersXML extends FileWriters {
     DocumentBuilder documentBuilder;
     Document document;
     Element mainElement;
-    String filename;
 
     public FileWritersXML() {
         super();
-        filename = null;
         documentBuilder = null;
         document = null;
         mainElement = null;
@@ -35,7 +33,7 @@ public class FileWritersXML extends FileWriters {
 
     public FileWritersXML(String filename1) {
         try {
-            filename = filename1;
+            setFilename(filename1);
             setOverwrite(true);
             documentBuilder = documentBuilderFactory.newDocumentBuilder();
             document = documentBuilder.newDocument();
@@ -48,7 +46,7 @@ public class FileWritersXML extends FileWriters {
     }
 
     public FileWritersXML(String filename1, boolean overwrite1) throws ParserConfigurationException {
-        filename = filename1;
+        setFilename(filename1);
         setOverwrite(overwrite1);
         try {
             if (!getOverwrite()) {
@@ -69,7 +67,6 @@ public class FileWritersXML extends FileWriters {
             document = documentBuilder.newDocument();
             mainElement = document.createElement("results");
             document.appendChild(mainElement);
-//            id = 1;
         }
     }
 
@@ -86,7 +83,7 @@ public class FileWritersXML extends FileWriters {
         try {
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource domSource = new DOMSource(document);
-            StreamResult streamResult = new StreamResult(new File(filename));
+            StreamResult streamResult = new StreamResult(new File(getFilename()));
             transformer.transform(domSource, streamResult);
         } catch (TransformerException e) {
             throw new RuntimeException(e);
@@ -95,6 +92,6 @@ public class FileWritersXML extends FileWriters {
 
     @Override
     public boolean isActive() {
-        return filename != null;
+        return getFilename() != null;
     }
 }
